@@ -7,15 +7,8 @@
     "magma",
     "grammar"
   ],
-  "repository": "https://github.com/sasquatch666/language-magma",
+  "repository": "https://github.com/sasquatch666/language-magma.git",
   "license": "MIT",
   "engines": { "atom": "*" },
-  "dependencies": { },
-  "consumedServices":  {
-    "file-icons.element-icons": {
-      "versions": {
-        "1.0.0": "consumeElementIcons"
-      }
-    }
-  }
+  "dependencies": { }
 }
