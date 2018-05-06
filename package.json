@@ -1,0 +1,21 @@
+{
+  "name": "language-magma",
+  "main": "./lib/language-magma",
+  "version": "1.0.0",
+  "description": "A grammar for the Magma computational algebra package",
+  "keywords": [
+    "magma",
+    "grammar"
+  ],
+  "repository": "https://github.com/atom/language-magma",
+  "license": "MIT",
+  "engines": { "atom": "*" },
+  "dependencies": { },
+  "consumedServices":  {
+    "file-icons.element-icons": {
+      "versions": {
+        "1.0.0": "consumeElementIcons"
+      }
+    }
+  }
+}

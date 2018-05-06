@@ -1,0 +1,9 @@
+scopeName: "source.magma.spec"
+name: "Magma Spec"
+fileTypes: [ "spec" ]
+patterns: [
+  {
+    name: "keyword.control.include-spec.magma"
+    match: "\\+\\w+\\b"
+  }
+]

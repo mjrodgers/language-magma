@@ -1,0 +1,159 @@
+".source.magma":
+  Assert:
+    prefix: "as"
+    body: "assert $1;"
+  Assert2:
+    prefix: "as2"
+    body: "assert2 $1;"
+  Assert3:
+    prefix: "as3"
+    body: "assert3 $1;"
+  "Case Statement":
+    prefix: "case"
+    body: '''
+      case $1 :
+      	when $2 : ${3:/* TODO: implement */};
+      	${4:else : ${5:/* TODO: implement */};}
+      end case;
+    '''
+  "Create Breakpoint":
+    prefix: "bp"
+    body: '''
+      error "Breakpoint";
+      
+    '''
+  "Create Function":
+    prefix: "func"
+    body: '''
+      ${1:function_name} := function(${2:params})
+      	${3:/* TODO: implement $1 */}
+      end function;
+    '''
+  "Create Group (Presentation)":
+    prefix: "cgp"
+    body: "${1:G}<$2> := Group<$2 | $3>;"
+  "Create Intrinsic":
+    prefix: "intr"
+    body: '''
+      intrinsic ${1:function_name} ( ${2:params} )
+      {$3}
+      	${4:/* TODO: implement $1 */}
+      end intrinsic;
+    '''
+  "Create Procedure":
+    prefix: "proc"
+    body: '''
+      ${1:procedure_name} := procedure(${2:params})
+      	${3:/* TODO: implement $1 */}
+      end procedure;
+    '''
+  "Debug Print Magma Statement":
+    prefix: "dm"
+    body: "printf \"$1: %m\\n\", $1;"
+  "Debug Print Statement":
+    prefix: "dp"
+    body: "printf \"$1: %o\\n\", $1;"
+  "End If Statement":
+    prefix: "ei"
+    body: "end if;$1"
+  "Error If":
+    prefix: "ef"
+    body: "error if $1 : \"$2\";"
+  Error:
+    prefix: "e"
+    body: '''
+      error "$1";
+      
+    '''
+  "For Statement":
+    prefix: "for"
+    body: '''
+      for $1 do
+      	${2:/* TODO: implement */}
+      end for;
+    '''
+  Homomorphism:
+    prefix: "hom"
+    body: "${1:h} := hom< ${2:G}->${3:H} | $4 >;"
+  "If Statement (line)":
+    prefix: "ifl"
+    body: "if $1 then ${2:/* TODO: implement */} end if;"
+  "If Statement":
+    prefix: "if"
+    body: '''
+      if $1 then
+      	${2:/* TODO: implement */}
+      end if;
+    '''
+  "If-Else Statement":
+    prefix: "ife"
+    body: '''
+      if $1 then
+      	${2:/* TODO: implement */}
+      else
+      	${3:/* TODO: implement */}
+      end if;
+    '''
+  Import:
+    prefix: "im"
+    body: "import \"$1\";"
+  Load:
+    prefix: "lo"
+    body: "load \"$1\";"
+  "Permutation Representation":
+    prefix: "pr"
+    body: "phi_$1, R_$1 := PermutationRepresentation($1);"
+  Print:
+    prefix: "p"
+    body: "print \"$1\";"
+  Quotient:
+    prefix: "q"
+    body: "${1:Q}, ${2:m} := quo< ${3:G} | $4 >;"
+  "Record Format":
+    prefix: "recformat"
+    body: "recformat < ${1:/* params */} >;${2}"
+  Record:
+    prefix: "rec"
+    body: "rec < ${1:/* format */} | ${2:/* variables */} >;${3}"
+  "Repeat Statement":
+    prefix: "repeat"
+    body: '''
+      repeat
+      	${3:/* TODO: implement */}
+      until $2;
+    '''
+  "Set Log File":
+    prefix: "log"
+    body: "SetLogFile(\"$1\");"
+  "Small Group Process":
+    prefix: "gp"
+    body: '''
+      ${1:P} := ${2|SmallGroup,TransitiveGroup|}Process($3);
+      repeat
+      	${4:G} := Current($1);
+      	$5
+      	Advance(~$1);
+      until IsEmpty($1);
+    '''
+  Subgroup:
+    prefix: "sub"
+    body: "${1:H} := sub< ${2:G} | $3 >;"
+  "Sylow Subgroup":
+    prefix: "sy"
+    body: "${1:S} := Sylow(${2:G}, ${3:2});"
+  "Unset Log File":
+    prefix: "ulog"
+    body: "UnsetLogFile();"
+  "Verbose Print":
+    prefix: "vt"
+    body: "vtime ${1:/* verbose flag */} : $2;"
+  "Verbose Time":
+    prefix: "vp"
+    body: "vprint ${1:/* verbose flag */} : \"$2\";"
+  "While Statement":
+    prefix: "while"
+    body: '''
+      while $1 do
+      	${2:/* TODO: implement */}
+      end while;
+    '''
