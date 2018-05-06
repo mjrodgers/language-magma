@@ -7,7 +7,7 @@
     "magma",
     "grammar"
   ],
-  "repository": "https://github.com/atom/language-magma",
+  "repository": "https://github.com/sasquatch666/language-magma",
   "license": "MIT",
   "engines": { "atom": "*" },
   "dependencies": { },
