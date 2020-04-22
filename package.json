@@ -1,7 +1,7 @@
 {
   "name": "language-magma",
   "main": "./lib/language-magma",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A grammar for the Magma computational algebra package",
   "keywords": [
     "magma",
