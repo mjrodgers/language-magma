@@ -1,0 +1,598 @@
+{
+  "name": "magma",
+  "scopeName": "source.magma",
+  "patterns": [{
+      "include": "#comments"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#storage"
+    },
+    {
+      "include": "#functions"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [{
+          "name": "comment.block.magma",
+          "begin": "/\\*",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.magma"
+            }
+          },
+          "end": "\\*/"
+        },
+        {
+          "name": "invalid.illegal.stray-comment-end.magma",
+          "match": "\\*/.*\\n"
+        },
+        {
+          "name": "comment.line.double-slash.magma",
+          "begin": "//",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.magma"
+            }
+          },
+          "end": "$\\n?",
+          "patterns": [{
+            "include": "#line_continuation"
+          }]
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [{
+          "name": "constant.language.boolean.magma",
+          "comment": "These are the only reserved keyword constants in Magma",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.numeric.integer.hexadecimal.magma",
+          "match": "\\b0x[0-9a-fA-F]+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.binary.magma",
+          "match": "\\b0b[01]+\\b"
+        },
+        {
+          "name": "constant.numeric.float.decimal.magma",
+          "match": "\\b[0-9]+\\.[0-9]*\\b"
+        },
+        {
+          "name": "constant.numeric.integer.decimal.magma",
+          "match": "\\b[0-9]+\\b"
+        },
+        {
+          "name": "invalid.illegal.name.magma",
+          "match": "\\b[0-9]+\\w+"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [{
+        "name": "string.quoted.double.magma",
+        "begin": "\"",
+        "beginCaptures": {
+          "0": {
+            "name": "punctuation.definition.string.begin.magma"
+          }
+        },
+        "end": "\"",
+        "endCaptures": {
+          "0": {
+            "name": "punctuation.definition.string.end.magma"
+          }
+        },
+        "patterns": [{
+            "include": "#line_continuation"
+          },
+          {
+            "include": "#string_escapes"
+          }
+        ]
+      }],
+      "repository": {
+        "line_continuation": {
+          "patterns": [{
+            "name": "punctuation.separator.continuation.magma",
+            "comment": "This needs to be adjusted and included more places",
+            "match": "(?>\\\\\\s*\\n)"
+          }]
+        },
+        "string_escapes": {
+          "patterns": [{
+              "name": "constant.character.escape.magma",
+              "match": "\\\\(\\\\|[abefnprtv'\"?]|[0-3]\\d{,2}|[4-7]\\d?|x[a-fA-F0-9]{,2})"
+            },
+            {
+              "name": "invalid.illegal.unknown-escape.magma",
+              "match": "\\\\."
+            },
+            {
+              "name": "constant.other.placeholder.magma",
+              "match": "(?x) %\n(\\d+\\$)?\t\t\t\t\t\t   # field (argument #)\n[#0\\- +']*\t\t\t\t\t\t  # flags\n[,;:_]?\t\t\t\t\t\t\t  # separator character (AltiVec)\n((-?\\d+)|\\*(-?\\d+\\$)?)?\t\t  # minimum field width\n(\\.((-?\\d+)|\\*(-?\\d+\\$)?)?)?\t# precision\n(hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier\n[diouxXDOUeEfFgGaACcSspn%]\t\t   # conversion type"
+            },
+            {
+              "name": "invalid.illegal.placeholder.magma",
+              "match": "%"
+            }
+          ]
+        }
+      }
+    },
+
+
+
+
+
+
+
+
+
+    "keywords": {
+      "patterns": [{
+          "name": "keyword.operator.magma",
+          "match": "\\b(#|\\||@|@@|:|\\.\\.|\\!|\\!\\!)"
+        },
+        {
+          "name": "keyword.operator.assignment.magma",
+          "match": ":="
+        },
+        {
+          "match": "(\\&)?(\\*|\\+)",
+          "captures": {
+            "1": {
+              "name": "punctuation.keyword.definition.magma"
+            },
+            "2": {
+              "name": "keyword.operator.arithmetic.magma"
+            }
+          }
+        },
+        {
+          "name": "keyword.operator.arithmetic.magma",
+          "match": "\\b(\\^|\\-|/)\\b"
+        },
+        {
+          "match": "\\b((\\&)?(or|and|cat|join|meet))\\b",
+          "captures": {
+            "1": {
+              "name": "punctuation.keyword.definition.magma"
+            },
+            "2": {
+              "name": "keyword.operator.word.magma"
+            }
+          }
+        },
+        {
+          "name": "keyword.operator.word.magma",
+          "match": "\\b(xor|by|to|eq|not|lt|gt|le|ge|cmpeq|cmpne|mod|is|xor|in|notin|delete|div|subset|notsubset|diff|sdiff|ne)\\b"
+        },
+        {
+          "name": "invalid.illegal.end-statement.magma",
+          "comment": "Catches end statement without semicolon???",
+          "match": "^\\s*end (function|procedure|intrinsic|if|for|while|case|try)$"
+        },
+        {
+          "name": "keyword.control.magma",
+          "comment": "Move these inside respective scopes so strays are marked invalid",
+          "match": "\\b(then|elif|else|return|where|do|select|when|break|continue|catch)\\b"
+        },
+        {
+          "name": "meta.block.try.magma",
+          "applyEndPatternLast": 1,
+          "begin": "\\b(try)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "end": "end try",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.block.repeat.magma",
+          "applyEndPatternLast": 1,
+          "begin": "\\b(repeat)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "end": "until",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.block.for.magma",
+          "applyEndPatternLast": 1,
+          "begin": "\\b(for)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "end": "end for",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.block.while.magma",
+          "applyEndPatternLast": 1,
+          "begin": "\\b(while)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "end": "end while",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.block.if.magma",
+          "applyEndPatternLast": 1,
+          "begin": "\\b(if)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "end": "end if",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.block.case.magma",
+          "applyEndPatternLast": 1,
+          "begin": "\\b(case)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "end": "end case",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.control.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "invalid.illegal.unpaired-control.magma",
+          "match": "\\b(end )?(if|then|elif|else|while|for|return|where|do|select|when|repeat|until|break|continue|try|catch)\\b"
+        },
+        {
+          "name": "meta.record.magma",
+          "begin": "(rec)\\s*(\\<)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.function.statement.magma"
+            },
+            "2": {
+              "name": "keyword.operator.magma"
+            },
+            "3": {
+              "name": "variable.magma"
+            }
+          },
+          "end": ">",
+          "endCaptures": {},
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.recordformat.magma",
+          "begin": "\\b(recformat)\\s*(\\<)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.function.statement.magma"
+            },
+            "2": {
+              "name": "keyword.operator.magma"
+            }
+          },
+          "end": ">",
+          "patterns": [{
+              "include": "$base"
+            },
+            {
+              "name": "meta.support.recordvariable.declaration.magma",
+              "match": "([A-Za-z_][A-Za-z0-9_]*)\\s*(:)",
+              "captures": {
+                "1": {
+                  "name": "variable.record.fieldname.magma"
+                },
+                "2": {
+                  "name": "keyword.operator.magma"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "meta.support.declaration.magma",
+          "begin": "\\b(declare\\s+verbose)\\s+([A-Za-z][A-Za-z0-9]*)",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.magma"
+            },
+            "2": {
+              "name": "support.type.verbose-flag.magma"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.support.declare.type.magma",
+          "begin": "\\b(declare\\s+type)\\s+([A-Za-z][A-Za-z0-9]*)",
+          "comment": "Should add support for 'declare type T[E]' variant",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.magma"
+            },
+            "2": {
+              "name": "entity.name.type.magma"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.support.declare.attributes.magma",
+          "comment": "After category name and :, should mark attributes as being defined?",
+          "begin": "\\b(declare\\s+attributes)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.magma"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.support.import.magma",
+          "comment": "Should mark imported items as entities",
+          "begin": "\\b(import)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.magma"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.support.forward.magma",
+          "begin": "\\b(forward)\\s+",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.function.statement.magma"
+            }
+          },
+          "end": ";",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.terminator.magma"
+            }
+          },
+          "patterns": [{
+            "match": "[A-Za-z][A-Za-z0-9]*",
+            "name": "entity.name.function.forward-decl.magma"
+          }]
+        },
+        {
+          "name": "meta.support.function.statement.vprint.magma",
+          "match": "\\b(vprint(f)?)\\s+([A-Za-z][A-Za-z0-9]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.verbose.magma"
+            },
+            "3": {
+              "name": "support.type.verbose.flag.magma"
+            }
+          }
+        },
+        {
+          "name": "meta.support.function.statement.vtime.magma",
+          "match": "\\b(vtime)\\s+([A-Za-z][A-Za-z0-9]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.verbose.magma"
+            },
+            "2": {
+              "name": "support.type.verbose.flag.magma"
+            }
+          }
+        },
+        {
+          "name": "keyword.function.statement.magma",
+          "match": "\\b(print|hom|quo|map|pmap|iso|sub|freeze|rec|recformat|car|assert(|2|3)|local|exists|forall|require|requirerange|requirege|import|assigned|save|restore|quit|iload|printf|fprintf|exit|read|readi|time|forward|error|clear|vprint|vprintf|vtime|func|declare|attributes|verbose|eval)\\b"
+        },
+        {
+          "name": "meta.load.magma",
+          "begin": "\\s*(load)\\s+",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.load.magma"
+            }
+          },
+          "end": ";",
+          "patterns": [{
+            "include": "$base"
+          }]
+        }
+      ]
+    },
+
+
+
+
+
+
+
+
+
+    "storage": {
+      "patterns": [{
+        "name": "storage.type.magma",
+        "match": "\\[(\\*|)|(\\*|)\\]|\\{(@|!|\\*|)|(@|!|\\*|)\\}"
+      }]
+    },
+    "functions": {
+      "patterns": [{
+          "name": "meta.function.magma",
+          "begin": "((\\b(function|procedure)\\b ([A-Za-z_][A-Za-z0-9_]*))|(\\b([A-Za-z_][A-Za-z0-9_]*)\\b\\s*(:=)\\s*\\b(function|procedure)\\b))",
+          "beginCaptures": {
+            "3": {
+              "name": "keyword.function.magma"
+            },
+            "4": {
+              "name": "entity.name.function.magma"
+            },
+            "6": {
+              "name": "entity.name.function.magma"
+            },
+            "7": {
+              "name": "keyword.operator.magma"
+            },
+            "8": {
+              "name": "keyword.function.magma"
+            }
+          },
+          "end": "end (function|procedure)",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.function.magma"
+            }
+          },
+          "patterns": [{
+            "include": "$base"
+          }]
+        },
+        {
+          "name": "meta.function.intrinsic.magma",
+          "begin": "\\b(intrinsic)\\b\\s*('(eq|lt|gt|le|ge|mod|in|notin|div|cat|join|subset|notsubset|meet|diff|sdiff|ne|\\*|\\^|\\+|\\-|#|\\||@|@@|\\/|\\!|\\!\\!)'|([A-Za-z_][A-Za-z0-9_]*\\b))?",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.function.magma"
+            },
+            "2": {
+              "name": "entity.name.function.magma"
+            },
+            "4": {
+              "name": "variable.magma"
+            },
+            "6": {
+              "name": "keyword.operator.magma"
+            }
+          },
+          "end": "end intrinsic",
+          "endCaptures": {
+            "0": {
+              "name": "keyword.function.magma"
+            }
+          },
+          "patterns": [{
+              "contentName": "comment.block.documentation.magma",
+              "begin": "^\\s*\\{",
+              "end": "\\}",
+              "captures": {
+                "0": {
+                  "name": "punctuation.definition.comment.magma"
+                }
+              }
+            },
+            {
+              "include": "$base"
+            }
+          ]
+        },
+        {
+          "name": "meta.function-call.magma",
+          "match": "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*\\(",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.call.magma"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

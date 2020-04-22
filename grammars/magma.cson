@@ -32,26 +32,27 @@ patterns: [
       "0": name: "punctuation.definition.comment.magma"
     end: "$\\n?"
     patterns: [
-      {
-        match: "(?>\\\\\\s*\\n)"
-        name: "punctuation.separator.continuation.magma"
-      }
+      { include: "#line_continuation" }
     ]
   }
   {
     name: "invalid.illegal.end-statement.magma"
-    match: "^\\s*end (function|procedure|intrinsic|if|for|while|case)$"
+    comment: "Added the end try, maybe want to add until but would require special treatment"
+    match: "^\\s*end (function|procedure|intrinsic|if|for|while|case|try)$"
   }
   {
     name: "constant.language.magma"
-    match: "\\b(NULL|true|false|TRUE|FALSE)\\b"
+    comment: "NULL, TRUE, FALSE are not reserved words, so discarded"
+    match: "\\b(true|false)\\b"
   }
   {
     name: "constant.numeric.magma"
+    comment: "Maybe want to borrow numeric-dec, numberic-hex from MagicPython"
     match: "\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)|([^A-Za-z]\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
   }
   {
     name: "string.quoted.double.magma"
+    comment: "Discarded single quoted strings since they aren't valid. Added line continuation."
     begin: "\""
     beginCaptures:
       "0": name: "punctuation.definition.string.begin.magma"
@@ -59,26 +60,19 @@ patterns: [
     endCaptures:
       "0": name: "punctuation.definition.string.end.magma"
     patterns: [
+      { include: "#line_continuation" }
       { include: "#string_escaped_char" }
       { include: "#string_placeholder" }
     ]
   }
   {
-    name: "string.quoted.single.magma"
-    begin: "'"
-    beginCaptures:
-      "0": name: "punctuation.definition.string.begin.magma"
-    end: "'"
-    endCaptures:
-      "0": name: "punctuation.definition.string.end.magma"
-    patterns: [ { include: "#string_escaped_char" } ]
-  }
-  {
     name: "variable.reference.magma"
+    comment: "Handle this differently"
     match: "~([A-Za-z_][A-Za-z0-9_]*)\\b"
   }
   {
     name: "variable.attribute.magma"
+    comment: "Handle this differently"
     match: "`([A-Za-z_][A-Za-z0-9_]*)\\b"
   }
   {
@@ -271,6 +265,13 @@ patterns: [
   }
 ]
 repository:
+  line_continuation:
+    patterns: [
+      {
+        name: "punctuation.separator.continuation.magma"
+        match: "(?>\\\\\\s*\\n)"
+      }
+    ]
   string_escaped_char:
     patterns: [
       {
@@ -287,16 +288,16 @@ repository:
       {
         name: "constant.other.placeholder.magma"
         match: '''
-          (?x)%
-              						(\\d+\\$)?                             # field (argument #)
-              						[#0\\- +']*                           # flags
-              						[,;:_]?                              # separator character (AltiVec)
-              						((-?\\d+)|\\*(-?\\d+\\$)?)?              # minimum field width
-              						(\\.((-?\\d+)|\\*(-?\\d+\\$)?)?)?         # precision
-              						(hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier
-              						[moOh%]           # conversion type
-
-        '''
+                 (?x)%
+                     						(\\d+\\$)?                             # field (argument #)
+                     						[#0\\- +']*                           # flags
+                     						[,;:_]?                              # separator character (AltiVec)
+                     						((-?\\d+)|\\*(-?\\d+\\$)?)?              # minimum field width
+                     						(\\.((-?\\d+)|\\*(-?\\d+\\$)?)?)?         # precision
+                     						(hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier
+                     						[moOh%]           # conversion type
+               
+               '''
       }
       {
         name: "invalid.illegal.placeholder.magma"
