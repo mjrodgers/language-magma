@@ -1,6 +1,6 @@
 {
-  "name": "magma",
-  "scopeName": "source.magma",
+  "name": "magma2",
+  "scopeName": "source.magma2",
   "patterns": [{
       "include": "#comments"
     },
