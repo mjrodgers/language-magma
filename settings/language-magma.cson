@@ -4597,7 +4597,9 @@
 ".source.magma2":
   editor:
     increaseIndentPattern: "^\\s*(function|procedure|if|for|while|elif|else|case|when|repeat|try|catch)[^;]*$|^\\s*\\b([A-Za-z][A-Za-z0-9]*)\\b\\s*:=\\s*\\b(function|procedure)\\b.*$"
-    decreaseIndentPattern: "^\\s*((end\\s+ (for|if|procedure|function|case|while|try))|else|elif|until|catch|when)\\b.*"
+    decreaseIndentPattern: "^\\s*(end|else|elif|until|catch|when)\\b"
+    indentNextLinePattern: "^\\b$"
+    unIndentedLinePattern: "^\\b$"
     completions: [
       "AbelianBasis"
       "AbelianExtension"
