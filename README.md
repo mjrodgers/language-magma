@@ -1,5 +1,5 @@
-This is, at the moment, just an automatically translated version of David Howden's MAGMA TextMate Bundle.
+This started life as an automatically translated version of David Howden's MAGMA TextMate Bundle, I have done some tweaks and modifications along the way.
 
 It provides syntax highlighting, autocompletion, and snippets for the MAGMA Computational Algebra package.
 
-At some point I am hoping to update with some features from the Bettale/Thibault Emacs package.
+I have been hoping to update with a tree-sitter version at some point.
