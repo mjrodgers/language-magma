@@ -65,46 +65,17 @@
   (#set! fold.endAt endPosition)
   (#set! fold.offsetEnd -1))
 
-; Runs of `//` line comments fold together, from the end of the first
-; comment's row to the end of the last comment:
+; A run of `//` comment lines with no blank line between them is a single
+; comment node (see scripts/patches/comment-runs.patch), so it folds like a
+; block comment, from the end of its first row to the end of its last:
 ;
 ;   // NOTE should this be a map?          ← fold starts here
 ;   // NOTE we aren't using xLinesW here
 ;   // debatable whether we need xLinesI   ← and ends here
 ;
-; Each comment is its own node, so this takes three patterns: a divided fold
-; that starts at the first comment of a run and ends at the last. The
-; `@fold.end` patterns come first so that the `capture.final` below doesn't
-; swallow them.
-
-; The last comment of a run: the next node isn't a line comment…
-((comment) @fold.end
-  .
-  _ @_IGNORE_.next
-  (#match? @fold.end "^//")
-  (#not-match? @_IGNORE_.next "^//")
+; A run that starts after code on the same row (`x := 1; // note`) doesn't
+; fold.
+((comment) @fold
+  (#match? @fold "^//")
+  (#is? test.firstTextOnRow)
   (#set! fold.endAt endPosition))
-
-; …or there is no next node. (An anchor can't express this, because
-; Tree-sitter skips comments when matching anchors.)
-((comment) @fold.end
-  (#match? @fold.end "^//")
-  (#is? test.last)
-  (#set! fold.endAt endPosition))
-
-; A line comment right after another comment can't start a run. (The first
-; comment is left uncaptured: `capture.final` applies to every capture in the
-; pattern, and the first comment may itself start a run.)
-((comment)
-  .
-  (comment) @_IGNORE_
-  (#match? @_IGNORE_ "^//")
-  (#set! capture.final))
-
-; The first comment of a run of at least two, on a row of its own.
-((comment) @fold.start
-  .
-  (comment) @_IGNORE_.following
-  (#match? @fold.start "^//")
-  (#match? @_IGNORE_.following "^//")
-  (#is? test.firstTextOnRow))

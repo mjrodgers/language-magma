@@ -30,3 +30,12 @@ try
 catch e
     print e`Object;
 end try;
+inc := func< v, ~acc : Step := 1 | v + Step >;
+RF := recformat< count : RngIntElt, label >;
+rr := rec< RF | count := 3 >;
+declare type MyGrp: Grp;
+declare attributes Grp: Weight, Colour;
+c := case< n | 1 : "one", default : "many" >;
+pick := rep{ k : k in [1..5] | IsOdd(k) };
+m := map< Integers() -> Integers() | t :-> t + 1 >;
+lit := \[ 1, 2 ];

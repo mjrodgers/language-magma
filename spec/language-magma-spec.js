@@ -90,6 +90,17 @@ describe('language-magma', () => {
       ['n +:=', '+:=', 'keyword.operator.assignment.magma'],
       ['declare verbose', 'MyFlag', 'constant.other.verbose-flag.magma'],
       ['try', 'try', 'keyword.control.exception.magma'],
+      ['inc := func<', 'v', 'variable.parameter.magma'],
+      ['inc := func<', 'acc', 'variable.parameter.reference.magma'],
+      ['inc := func<', 'Step', 'variable.parameter.optional.magma'],
+      ['RF := recformat<', 'count', 'variable.other.member.magma'],
+      ['RF := recformat<', 'RngIntElt', 'support.type.magma'],
+      ['rr := rec<', 'count', 'variable.other.member.magma'],
+      ['declare type MyGrp', 'Grp;', 'support.type.magma'],
+      ['c := case<', 'default', 'keyword.control.conditional.case.magma'],
+      ['pick := rep', 'rep', 'keyword.operator.word.magma'],
+      ['m := map<', 't :->', 'variable.parameter.magma'],
+      ['lit := ', '\\[', 'punctuation.definition.sequence.literal.magma'],
     ];
 
     for (const [line, token, scope] of cases) {
@@ -98,6 +109,24 @@ describe('language-magma', () => {
         expect(scopesAt(editor, row, column)).toContain(scope);
       });
     }
+  });
+
+  describe('symbols', () => {
+    it('lists definitions, attributes and record fields for Go to Symbol', async () => {
+      await atom.packages.activatePackage('symbol-provider-tree-sitter');
+      const provider = atom.packages.getActivePackage('symbol-provider-tree-sitter').mainModule.provideSymbols();
+      const editor = await openFixture('highlighting.m');
+      const symbols = await provider.getSymbols({ editor, type: 'file', signal: new AbortController().signal });
+      const describe = (s) => `${s.name}:${s.tag}${s.context ? ':' + s.context : ''}`;
+      const found = symbols.map(describe);
+      for (const expected of [
+        'Order2:intrinsic', 'square:function', 'MyFlag:verbose', 'inc:function',
+        'RF:struct', 'count:field:RF', 'label:field:RF', 'MyGrp:type',
+        'Weight:attribute:Grp', 'Colour:attribute:Grp',
+      ]) {
+        expect(found).toContain(expected);
+      }
+    });
   });
 
   describe('indentation', () => {
@@ -187,20 +216,23 @@ describe('language-magma', () => {
   });
 
   describe('folding', () => {
-    it('folds runs of line comments, from the first comment to the last', async () => {
+    it('folds runs of line comments, each block separately', async () => {
       const editor = await openFixture('comments.m');
       const expectFold = (row, lastHidden) => {
         expect(`row ${row + 1} foldable: ${editor.isFoldableAtBufferRow(row)}`).toBe(`row ${row + 1} foldable: true`);
         editor.foldBufferRow(row);
-        expect(editor.isFoldedAtBufferRow(lastHidden)).toBe(true);
-        expect(editor.isFoldedAtBufferRow(lastHidden + 1)).toBe(false);
+        expect(`row ${lastHidden + 1} folded: ${editor.isFoldedAtBufferRow(lastHidden)}`).toBe(`row ${lastHidden + 1} folded: true`);
+        expect(`row ${lastHidden + 2} folded: ${editor.isFoldedAtBufferRow(lastHidden + 1)}`).toBe(`row ${lastHidden + 2} folded: false`);
         editor.unfoldAll();
       };
       expectFold(0, 2);    // the header
-      expectFold(4, 7);    // the four NOTE lines, not `y := 2;`
-      expectFold(13, 14);  // inside the loop body, not `end for;`
-      expect(editor.isFoldableAtBufferRow(9)).toBe(false);  // a single comment
-      expect(editor.isFoldableAtBufferRow(11)).toBe(true);  // the loop itself
+      expectFold(4, 6);    // three NOTE lines, not the blank lines after them
+      expectFold(9, 14);   // the commented-out function, including bare `//` lines
+      expectFold(16, 17);  // the last block, not `y := 2;`
+      expectFold(24, 25);  // inside the loop body, not `end for;`
+      expect(editor.isFoldableAtBufferRow(19)).toBe(false); // a single comment
+      expect(editor.isFoldableAtBufferRow(20)).toBe(false); // a trailing comment
+      expect(editor.isFoldableAtBufferRow(22)).toBe(true);  // the loop itself
     });
 
     it('folds definitions and blocks, keeping `end` visible', async () => {

@@ -4,8 +4,14 @@
 #   scripts/build-parser.sh [commit-or-branch]
 #
 # Needs git and the tree-sitter CLI (0.26 or later). `tree-sitter build --wasm`
-# downloads wasi-sdk on first use, so no Emscripten or Docker is required.
-# Pulsar 1.127+ loads parsers with ABI 15, which this produces.
+# downloads wasi-sdk on first use, so no Emscripten or Docker is required, and
+# the parser is generated with tree-sitter's built-in JavaScript runtime, so
+# Node isn't needed either. Pulsar 1.127+ loads parsers with ABI 15, which this
+# produces.
+#
+# The patches in scripts/patches/ are applied to the upstream grammar first:
+#   comment-runs.patch  consecutive `//` lines form one comment node, so they
+#                       fold as a block
 set -euo pipefail
 
 REF="${1:-75b31f4695261967c7aa87d552d69805dc03c77b}"
@@ -18,7 +24,11 @@ git clone --quiet https://github.com/edgarcosta/tree-sitter-magma.git "$WORK/tre
 git -C "$WORK/tree-sitter-magma" checkout --quiet "$REF"
 COMMIT="$(git -C "$WORK/tree-sitter-magma" rev-parse HEAD)"
 
-(cd "$WORK/tree-sitter-magma" && tree-sitter build --wasm -o "$OUT" .)
+for patch in "$HERE"/scripts/patches/*.patch; do
+  git -C "$WORK/tree-sitter-magma" apply "$patch"
+done
+
+(cd "$WORK/tree-sitter-magma" && tree-sitter generate --js-runtime native && tree-sitter build --wasm -o "$OUT" .)
 
 # Keep the grammar file's parserSource in step with the commit we built.
 sed -i.bak -E "s|(parserSource: 'github:edgarcosta/tree-sitter-magma#)[0-9a-f]+'|\1${COMMIT}'|" \

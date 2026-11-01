@@ -48,3 +48,23 @@
 (forward
   (identifier) @name
   (#set! symbol.tag "forward")) @definition.function
+
+; declare attributes Grp: Order, Name;  (one symbol per attribute, with the
+; category as context)
+(attribute_declaration
+  ":"
+  (identifier) @definition.field @name
+  (#set! symbol.tag "attribute")
+  (#set! symbol.contextNode "parent.firstNamedChild"))
+
+; RF := recformat< n : RngIntElt, s >;  (one symbol per field, with the
+; format's name as context)
+(recformat_constructor
+  (field_definition
+    name: (identifier) @definition.field @name
+    (#set! symbol.tag "field")
+    (#set! symbol.contextNode "parent.parent.parent.firstNamedChild")))
+(recformat_constructor
+  (identifier) @definition.field @name
+  (#set! symbol.tag "field")
+  (#set! symbol.contextNode "parent.parent.firstNamedChild"))

@@ -1,0 +1,19 @@
+diff --git a/grammar.js b/grammar.js
+index b035ded..da357e1 100644
+--- a/grammar.js
++++ b/grammar.js
+@@ -90,8 +90,12 @@ module.exports = grammar({
+ 	// taken from
+ 	// https://github.com/tree-sitter/tree-sitter-c/blob/master/grammar.js
+ 	comment: _ => token(choice(
+-	    // inline comment
+-	    seq('//', /(\\+(.|\r?\n)|[^\\\n])*/),
++	    // inline comment; consecutive `//` lines (no blank line between)
++	    // form a single token, so editors can fold them as one block
++	    seq(
++		'//', /(\\+(.|\r?\n)|[^\\\n])*/,
++		repeat(seq(/\r?\n[ \t]*\/\//, /(\\+(.|\r?\n)|[^\\\n])*/)),
++	    ),
+ 	    // block comment
+ 	    seq(
+ 		'/*',

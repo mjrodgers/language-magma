@@ -108,6 +108,10 @@
 (intrinsic_definition (typed_identifier . (identifier) @variable.parameter.magma))
 (intrinsic_definition (ref_identifier (identifier) @variable.parameter.reference.magma))
 (intrinsic_definition (ref_typed_identifier (identifier) @variable.parameter.reference.magma))
+(intrinsic_definition (backtick_identifier (identifier) @variable.parameter.magma)
+  (#set! capture.final))
+; Option names after the `:` that have no default value.
+(intrinsic_definition (optional_parameter) (identifier) @variable.parameter.optional.magma)
 
 ; Optional (named) parameters: `: Proof := true`
 (optional_parameter
@@ -115,6 +119,39 @@
 (optional_argument
   (identifier) @variable.parameter.optional.magma
   (#is? test.first))
+
+; Parameters of anonymous functions: func< x, y : Flag := 1 | ... >
+((constructor
+  name: (identifier) @_IGNORE_
+  (identifier) @variable.parameter.magma)
+  (#match? @_IGNORE_ "^(func|proc)$"))
+((constructor
+  name: (identifier) @_IGNORE_
+  (constructor_elements
+    (constructor_options
+      (simple_assignment name: (identifier) @variable.parameter.optional.magma))))
+  (#match? @_IGNORE_ "^(func|proc)$"))
+((constructor
+  name: (identifier) @_IGNORE_
+  (constructor_elements
+    (constructor_options (identifier) @variable.parameter.optional.magma)))
+  (#match? @_IGNORE_ "^(func|proc)$"))
+
+((constructor
+  name: (identifier) @_IGNORE_
+  (unary_operator operator: "~" right: (identifier) @variable.parameter.reference.magma))
+  (#match? @_IGNORE_ "^(func|proc)$"))
+
+; The bound variable of a map: map< A -> B | x :-> f(x) >
+(map_constructor
+  domain_element: (identifier) @variable.parameter.magma)
+
+; Field names when building a record: rec< RF | field := 1 >
+((constructor
+  name: (identifier) @_IGNORE_
+  (constructor_elements
+    (simple_assignment name: (identifier) @variable.other.member.magma)))
+  (#eq? @_IGNORE_ "rec"))
 
 ; `~x` passes a reference.
 (ref_identifier "~" @keyword.operator.reference.magma)
@@ -125,6 +162,8 @@
   "recformat" @storage.type.recformat.magma)
 (field_definition
   name: (identifier) @variable.other.member.magma)
+(field_definition
+  type: (identifier) @support.type.magma)
 (recformat_constructor
   (identifier) @variable.other.member.magma)
 
@@ -134,6 +173,8 @@
 (type_declaration
   (type . (identifier) @entity.name.type.magma)
   (#set! capture.final))
+(type_declaration
+  supertype: (identifier) @support.type.magma)
 (attribute_declaration "attributes" @storage.type.declare.magma)
 (attribute_declaration
   category: (identifier) @support.type.magma)
@@ -226,6 +267,13 @@
   (#set! capture.final))
 (case_constructor "case" @keyword.control.conditional.case.magma
   (#set! capture.final))
+((case_constructor
+  match: (identifier) @keyword.control.conditional.case.magma)
+  (#eq? @keyword.control.conditional.case.magma "default")
+  (#set! capture.final))
+(case_statement ":" @punctuation.separator.case.magma)
+(when_clause ":" @punctuation.separator.case.magma)
+(case_constructor ["|" ":"] @punctuation.separator.case.magma)
 (ternary_operator ["select" "else"] @keyword.control.conditional.ternary.magma
   (#set! capture.final))
 
@@ -281,6 +329,12 @@
 ] @keyword.other.magma
 [(clear) (freeze)] @keyword.other.magma
 
+; `rep{ x : x in S | ... }` picks one element.
+((representative_of_set
+  . (identifier) @keyword.operator.word.magma)
+  (#eq? @keyword.operator.word.magma "rep")
+  (#set! capture.final))
+
 
 ; OPERATORS
 ; =========
@@ -332,6 +386,8 @@
 ["{@" "@}"] @punctuation.definition.set.indexed.magma
 ["{*" "*}"] @punctuation.definition.set.multi.magma
 ["{!" "!}"] @punctuation.definition.set.formal.magma
+"\\[" @punctuation.definition.sequence.literal.magma
+"\\(" @punctuation.definition.cycle.literal.magma
 
 
 ; VARIABLES

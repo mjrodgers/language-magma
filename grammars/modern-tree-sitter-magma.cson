@@ -23,7 +23,6 @@ treeSitter:
   foldsQuery: 'tree-sitter/folds.scm'
   indentsQuery: 'tree-sitter/indents.scm'
   tagsQuery: 'tree-sitter/tags.scm'
-  localsQuery: 'tree-sitter/locals.scm'
 
 comments:
   start: '// '
