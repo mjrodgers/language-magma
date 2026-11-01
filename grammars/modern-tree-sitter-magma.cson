@@ -1,0 +1,31 @@
+name: 'Magma'
+scopeName: 'source.magma'
+type: 'modern-tree-sitter'
+parser: 'tree-sitter-magma'
+
+injectionRegex: '^(magma|Magma|MAGMA)$'
+
+fileTypes: [
+  'm'
+  'mag'
+  'magma'
+  'mgm'
+]
+
+# `.m` is shared with Objective-C and MATLAB. A file that contains Magma's
+# assignment operator or a Magma block ending is preferred for this grammar.
+contentRegex: '(:=|\\bend\\s+(if|for|while|function|procedure|intrinsic|case|try)\\s*;)'
+
+treeSitter:
+  parserSource: 'github:edgarcosta/tree-sitter-magma#75b31f4695261967c7aa87d552d69805dc03c77b'
+  grammar: 'tree-sitter/tree-sitter-magma.wasm'
+  highlightsQuery: 'tree-sitter/highlights.scm'
+  foldsQuery: 'tree-sitter/folds.scm'
+  indentsQuery: 'tree-sitter/indents.scm'
+  tagsQuery: 'tree-sitter/tags.scm'
+  localsQuery: 'tree-sitter/locals.scm'
+
+comments:
+  start: '// '
+  line: '//'
+  block: ['/*', '*/']

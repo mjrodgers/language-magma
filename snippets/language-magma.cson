@@ -58,7 +58,7 @@
     body: "end if;$1"
   "Error If":
     prefix: "ef"
-    body: "error if $1 : \"$2\";"
+    body: "error if $1, \"$2\";"
   Error:
     prefix: "e"
     body: '''
@@ -96,7 +96,7 @@
     '''
   Import:
     prefix: "im"
-    body: "import \"$1\";"
+    body: "import \"${1:file.m}\": ${2:names};"
   Load:
     prefix: "lo"
     body: "load \"$1\";"
@@ -145,11 +145,14 @@
     prefix: "ulog"
     body: "UnsetLogFile();"
   "Verbose Print":
-    prefix: "vt"
-    body: "vtime ${1:/* verbose flag */} : $2;"
-  "Verbose Time":
     prefix: "vp"
-    body: "vprint ${1:/* verbose flag */} : \"$2\";"
+    body: "vprint ${1:/* verbose flag */}: \"$2\";"
+  "Verbose Printf":
+    prefix: "vpf"
+    body: "vprintf ${1:/* verbose flag */}: \"$2\\\\n\", $3;"
+  "Verbose Time":
+    prefix: "vt"
+    body: "vtime ${1:/* verbose flag */}: $2;"
   "While Statement":
     prefix: "while"
     body: '''
@@ -157,3 +160,30 @@
       	${2:/* TODO: implement */}
       end while;
     '''
+  "Try Statement":
+    prefix: "try"
+    body: '''
+      try
+      	${1:/* TODO: implement */}
+      catch ${2:e}
+      	${3:print $2`Object;}
+      end try;
+    '''
+  "Elif Clause":
+    prefix: "eli"
+    body: '''
+      elif $1 then
+      	${2:/* TODO: implement */}
+    '''
+  "Declare Verbose":
+    prefix: "dv"
+    body: "declare verbose ${1:Flag}, ${2:2};"
+  "Declare Attributes":
+    prefix: "da"
+    body: "declare attributes ${1:Category}: ${2:Attribute};"
+  Attach:
+    prefix: "at"
+    body: "Attach(\"$1\");"
+  AttachSpec:
+    prefix: "ats"
+    body: "AttachSpec(\"$1\");"

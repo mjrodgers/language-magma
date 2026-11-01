@@ -1,11 +1,14 @@
-scopeName: "source.Magma"
+scopeName: "source.magma"
 
 name: "Magma"
 fileTypes: [
   "m"
+  "mag"
   "magma"
   "mgm"
 ]
+# `.m` is shared with Objective-C and MATLAB; see modern-tree-sitter-magma.cson.
+contentRegex: "(:=|\\bend\\s+(if|for|while|function|procedure|intrinsic|case|try)\\s*;)"
 limitLineLength: false
 
 # foldingStartMarker/foldingStopMarker not used by Atom to my knowledge.
