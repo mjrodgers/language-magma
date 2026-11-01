@@ -6,7 +6,7 @@ Version 3 adds a modern Tree-sitter grammar built on [edgarcosta/tree-sitter-mag
 
 - **Highlighting** that understands Magma's structure: intrinsic, function and procedure definitions and their parameters, typed parameters (`G::GrpPerm`), optional parameters (`: Proof := true`), `~` references, constructors (`sub< G | ... >`, `hom< ... >`, `rec< ... >`), generator names (`R<x, y> := ...`), attributes (``G`Order``), docstrings, verbose flags and the word operators (`eq`, `in`, `cat`, `mod`, ...).
 - **Indentation** for every block form, including `case`/`when`, `try`/`catch`, `repeat`/`until`, intrinsic docstrings and multi-line brackets and constructors. `end` lines up with the row its block starts on, so `f := function(x) ... end function;` works too.
-- **Folding** of definitions, loops, each branch of an `if`, `case` arms, block comments, docstrings and multi-line brackets.
+- **Folding** of definitions, loops, each branch of an `if`, `case` arms, block comments, runs of two or more `//` comments, docstrings and multi-line brackets.
 - **Symbols** for **Symbols View: Toggle File Symbols** (<kbd>Cmd/Ctrl-R</kbd>): intrinsics, functions, procedures (named or assigned), record formats, declared types and verbose flags.
 - **Snippets** for the common statements and constructors.
 
@@ -51,6 +51,7 @@ Scope-specific editor settings can be set for `.source.magma`, for example:
 
 ## Known limitations
 
+- Runs of `//` comments separated only by blank lines fold as one run. Tree-sitter treats them as neighbours, and folds can't tell how many rows lie between.
 - Continuation lines of a multi-line docstring are free text. **Editor: Auto Indent** sets them to the docstring's level.
 - The parser does not yet accept a completely empty loop body (`for i in S do end for;`), so such a line is highlighted as an error. Anything inside the body, even a comment, avoids it.
 

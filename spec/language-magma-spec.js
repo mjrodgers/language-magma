@@ -187,6 +187,22 @@ describe('language-magma', () => {
   });
 
   describe('folding', () => {
+    it('folds runs of line comments, from the first comment to the last', async () => {
+      const editor = await openFixture('comments.m');
+      const expectFold = (row, lastHidden) => {
+        expect(`row ${row + 1} foldable: ${editor.isFoldableAtBufferRow(row)}`).toBe(`row ${row + 1} foldable: true`);
+        editor.foldBufferRow(row);
+        expect(editor.isFoldedAtBufferRow(lastHidden)).toBe(true);
+        expect(editor.isFoldedAtBufferRow(lastHidden + 1)).toBe(false);
+        editor.unfoldAll();
+      };
+      expectFold(0, 2);    // the header
+      expectFold(4, 7);    // the four NOTE lines, not `y := 2;`
+      expectFold(13, 14);  // inside the loop body, not `end for;`
+      expect(editor.isFoldableAtBufferRow(9)).toBe(false);  // a single comment
+      expect(editor.isFoldableAtBufferRow(11)).toBe(true);  // the loop itself
+    });
+
     it('folds definitions and blocks, keeping `end` visible', async () => {
       const editor = await openFixture('indentation.m');
       const rowOf = (text) => editor.getText().split('\n').findIndex((l) => l.startsWith(text));

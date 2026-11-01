@@ -3,6 +3,7 @@
 ## 3.0.0
 
 - Added a modern Tree-sitter grammar (`tree-sitter-magma` compiled to WASM) with highlighting, folding, indentation, symbols and locals queries.
+- Runs of `//` line comments fold together, as they did with the TextMate grammar.
 - Added the **Indent intrinsic docstrings** setting.
 - Renamed the scope from `source.Magma` to `source.magma`, so the grammar, settings and snippets share one scope (in 2.x the snippets used `source.magma` while the main grammar used `source.Magma`, so they only fired with the alternative grammars).
 - `.m` files are claimed only when their content looks like Magma, so Objective-C and MATLAB files are left alone.

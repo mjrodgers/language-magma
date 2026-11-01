@@ -1,6 +1,6 @@
 {
   "name": "language-magma",
-  "version": "3.1.0",
+  "version": "3.0.0",
   "description": "Magma computer algebra language support for Pulsar: Tree-sitter highlighting, folding, indentation and symbols, plus snippets",
   "keywords": [
     "magma",
@@ -9,7 +9,7 @@
     "tree-sitter",
     "language"
   ],
-  "repository": "https://github.com/mjrodgers/language-magma",
+  "repository": "https://github.com/sasquatch666/language-magma",
   "license": "MIT",
   "engines": {
     "atom": ">=1.127.0 <2.0.0"
