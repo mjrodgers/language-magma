@@ -1,16 +1,33 @@
 {
   "name": "language-magma",
-  "main": "./lib/language-magma",
-  "version": "2.1.1",
-  "description": "A grammar for the Magma computational algebra package",
+  "version": "3.0.0",
+  "description": "Magma computer algebra language support for Pulsar: Tree-sitter highlighting, folding, indentation and symbols, plus snippets",
   "keywords": [
     "magma",
-    "grammar"
+    "computer-algebra",
+    "grammar",
+    "tree-sitter",
+    "language"
   ],
-  "repository": "https://github.com/sasquatch666/language-magma.git",
+  "repository": "https://github.com/sasquatch666/language-magma",
   "license": "MIT",
   "engines": {
-    "atom": "*"
+    "atom": ">=1.127.0 <2.0.0"
   },
+  "configSchema": {
+    "indentation": {
+      "type": "object",
+      "title": "Indentation",
+      "properties": {
+        "indentDocstring": {
+          "type": "boolean",
+          "default": false,
+          "title": "Indent intrinsic docstrings",
+          "description": "Indent the `{...}` documentation string one level under the `intrinsic` line, instead of leaving it flush with it. Applies to the Tree-sitter grammar."
+        }
+      }
+    }
+  },
+  "atomTestRunner": "runners/jasmine2-test-runner",
   "dependencies": {}
 }
