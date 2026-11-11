@@ -8,6 +8,7 @@ Version 3 adds a modern Tree-sitter grammar built on [edgarcosta/tree-sitter-mag
 - **Indentation** for every block form, including `case`/`when`, `try`/`catch`, `repeat`/`until`, intrinsic docstrings and multi-line brackets and constructors. `end` lines up with the row its block starts on, so `f := function(x) ... end function;` works too.
 - **Folding** of definitions, loops, each branch of an `if`, `case` arms, block comments, runs of two or more `//` comments, docstrings and multi-line brackets.
 - **Symbols** for **Symbols View: Toggle File Symbols** (<kbd>Cmd/Ctrl-R</kbd>): intrinsics, functions, procedures (named or assigned), record formats and their fields, declared types, declared attributes (shown with their category) and verbose flags.
+- **TODO words and links** in comments and docstrings: with Pulsar's bundled `language-todo` and `language-hyperlink` packages, words like `TODO`, `NOTE`, `FIXME` and `BUG` are coloured and URLs underlined (URLs in strings too).
 - **Snippets** for the common statements and constructors.
 
 The original TextMate grammar is still included. Pulsar uses it when **Core: Use Tree-sitter Parsers** is off.

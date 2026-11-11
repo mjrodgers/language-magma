@@ -111,6 +111,43 @@ describe('language-magma', () => {
     }
   });
 
+  describe('words and links inside comments', () => {
+    it('colours TODO, NOTE and BUG and underlines URLs', async () => {
+      await atom.packages.activatePackage('language-todo');
+      await atom.packages.activatePackage('language-hyperlink');
+      const editor = await atom.workspace.open();
+      editor.setGrammar(atom.grammars.grammarForScopeName('source.magma'));
+      const languageMode = editor.getBuffer().getLanguageMode();
+      await languageMode.ready;
+      editor.setText([
+        '// NOTE should this be a map?',
+        '// TODO : send <x>_E to <pt>_E',
+        '/* BUG: see https://example.org/issue */',
+        'intrinsic F(x) -> .',
+        '{FIXME: document this}',
+        '  return x;',
+        'end intrinsic;',
+        's := "https://magma.maths.usyd.edu.au";',
+      ].join('\n'));
+      await languageMode.atTransactionEnd();
+      const at = (row, column) => editor.scopeDescriptorForBufferPosition([row, column]).getScopesArray();
+      // The injected TODO and link layers are parsed asynchronously after the
+      // main tree, so wait for the last one to show up.
+      jasmine.useRealClock();
+      for (let i = 0; i < 100 && !at(7, 10).includes('markup.underline.link.hyperlink'); i++) {
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+      expect(at(0, 4)).toContain('storage.type.class.todo');    // NOTE
+      expect(at(1, 4)).toContain('storage.type.class.todo');    // TODO
+      expect(at(2, 4)).toContain('storage.type.class.todo');    // BUG
+      expect(at(4, 2)).toContain('storage.type.class.todo');    // FIXME in a docstring
+      expect(at(2, 15)).toContain('markup.underline.link.hyperlink');
+      expect(at(7, 10)).toContain('markup.underline.link.hyperlink');
+      // Ordinary words are left alone.
+      expect(at(0, 10)).not.toContain('storage.type.class.todo');
+    });
+  });
+
   describe('symbols', () => {
     it('lists definitions, attributes and record fields for Go to Symbol', async () => {
       await atom.packages.activatePackage('symbol-provider-tree-sitter');
